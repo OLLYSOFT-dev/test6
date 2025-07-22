@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMARTFARM</title>
-    <!-- Link to the web app manifest -->
-    <link rel="manifest" href="manifest.json">
+    <!-- Link to the web app manifest with absolute path for GitHub Pages -->
+    <link rel="manifest" href="/manifest.json">
     <!-- Optional: Apple Touch Icon for iOS -->
-    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <link rel="apple-touch-icon" href="/icon-192x192.png">
     <!-- Ensure the app is displayed standalone (like a native app) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
     <style>
         #installPopup {
             display: none;
@@ -64,8 +64,8 @@
     <header>
         <div class="logo">SMARTFARM<span>AI</span></div>
         <nav>
-            <a href="#" class="head button">Refresh App</a>
-            <a href="disease.html" class="head button">Analyze Disease</a>
+            <a href="/" class="head button">Refresh App</a>
+            <a href="/disease.html" class="head button">Analyze Disease</a>
             <a href="#" class="login button">Login</a>
             <a href="#" class="signup button">Sign Up</a>
         </nav>
@@ -120,11 +120,11 @@
         <button id="installBtn">Install</button>
     </div>
 
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
     <script>
-        // Register the service worker
+        // Register the service worker with absolute path
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
+            navigator.serviceWorker.register('/service-worker.js')
                 .then(() => console.log('Service Worker registered'))
                 .catch(err => console.error('Service Worker registration failed:', err));
         }

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMARTFARM</title>
+    <!-- Link to the web app manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Optional: Apple Touch Icon for iOS -->
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <!-- Ensure the app is displayed standalone (like a native app) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #installPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-align: center;
+            width: 300px;
+        }
+        #installPopup h2 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+        #installPopup p {
+            margin: 0 0 15px;
+            color: #666;
+        }
+        #installPopup button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        #installPopup button:hover {
+            background-color: #45a049;
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SMARTFARM<span>AI</span></div>
+        <nav>
+            <a href="#" class="head button">Refresh App</a>
+            <a href="disease.html" class="head button">Analyze Disease</a>
+            <a href="#" class="login button">Login</a>
+            <a href="#" class="signup button">Sign Up</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="dashboard">
+            <h2>🌾 Farm Dashboard</h2>
+            <div class="cards">
+                <div class="card weather">
+                    <p id="location">Detecting location...</p>
+                    <div id="weatherData">Loading weather...</div>
+                </div>
+                <div class="card calendar">
+                    <h3>📅 Farming Calendar</h3>
+                    <p>Upcoming farming activities:</p>
+                    <ul>
+                        <li>Maize planting - Next week</li>
+                        <li>Fertilizer application - In 2 weeks</li>
+                        <li>Harvest season - 3 months</li>
+                    </ul>
+                </div>
+                <div class="card tips">
+                    <h3>💡 Smart Tips</h3>
+                    <ul>
+                        <li>Plant maize now for optimal growth in current weather conditions</li>
+                        <li>Consider rotating your crops to maintain soil health</li>
+                        <li>Detect illness early and manage herds efficiently.</li>
+                        <li>Utilize Data Analytics & AI</li>
+                        <li>Predict yield, detect anomalies, and optimize resource usage with machine learning models.</li>
+                        <li>Use historical data to improve future planning.</li>
+                        <li>Practice Sustainable Farming</li>
+                        <li>Reduce chemical usage, adopt organic inputs, and manage waste responsibly.</li>
+                        <li>Invest in renewable energy sources like solar panels for farm operations.</li>
+                        <li>Stay Educated and Connected</li>
+                        <li>Participate in agri-tech forums, webinars, and farmer networks.</li>
+                        <li>Stay updated on new technologies and best practices.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © 2025 SmartFarm - AI-Powered Farming Assistant
+    </footer>
+
+    <div id="overlay"></div>
+    <div id="installPopup">
+        <h2>Install SmartFarm</h2>
+        <p>Add this app to your home screen for quick access to your farming tools!</p>
+        <button id="installBtn">Install</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Register the service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log('Service Worker registered'))
+                .catch(err => console.error('Service Worker registration failed:', err));
+        }
+
+        // Handle PWA installation with popup
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('installPopup').style.display = 'block';
+        });
+
+        document.getElementById('installBtn').addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('overlay').style.display = 'none';
+                    document.getElementById('installPopup').style.display = 'none';
+                });
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('App installed successfully');
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('installPopup').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

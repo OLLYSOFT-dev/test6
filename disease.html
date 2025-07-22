@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Farm AI Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8f0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #355e3b;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            flex-shrink: 0;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .analyzer-container {
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+        }
+        .camera-area {
+            margin-bottom: 20px;
+        }
+        #videoFeed {
+            max-width: 100%;
+            max-height: 300px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+        #captureButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        #captureButton:hover {
+            background-color: #45a049;
+        }
+        #captureButton:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .image-preview {
+            margin: 20px 0;
+            max-width: 100%;
+            max-height: 300px;
+            overflow: hidden;
+            display: none;
+        }
+        .image-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        .result {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            text-align: center;
+            transition: opacity 0.3s;
+        }
+        .result.hidden {
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        @media (max-width: 480px) {
+            #videoFeed {
+                max-height: 200px;
+            }
+            .result {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌱 Farm AI Analyzer</h1>
+    </header>
+    <main>
+        <section class="analyzer-container">
+            <div class="camera-area">
+                <video id="videoFeed" autoplay playsinline></video>
+                <button id="captureButton">Capture Photo</button>
+            </div>
+            <div id="imagePreview" class="image-preview"></div>
+            <div id="analysisResult" class="result">Ready to analyze your crop.</div>
+        </section>
+    </main>
+    <script>
+        // Camera and analysis setup
+        const videoFeed = document.getElementById('videoFeed');
+        const captureButton = document.getElementById('captureButton');
+        const imagePreview = document.getElementById('imagePreview');
+        const analysisResult = document.getElementById('analysisResult');
+        let stream;
+
+        // Start camera
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                videoFeed.srcObject = stream;
+                analysisResult.classList.add('hidden');
+            } catch (error) {
+                analysisResult.textContent = 'Camera access denied. Please allow permissions.';
+                analysisResult.classList.remove('hidden');
+                console.error('Camera error:', error);
+            }
+        }
+
+        // Stop camera
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        // Capture photo
+        function capturePhoto() {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoFeed.videoWidth;
+            canvas.height = videoFeed.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
+            const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8); // Compress to 80% quality
+            imagePreview.innerHTML = `<img src="${imageDataUrl}" alt="Captured crop image">`;
+            imagePreview.style.display = 'block';
+            stopCamera();
+            analyzeImage(imageDataUrl);
+        }
+
+        // Analyze image with API (placeholder for your Hugging Face API)
+        async function analyzeImage(imageDataUrl) {
+            analysisResult.textContent = 'Analyzing...';
+            analysisResult.classList.remove('hidden');
+            captureButton.disabled = true;
+
+            const blob = await (await fetch(imageDataUrl)).blob();
+            const formData = new FormData();
+            formData.append('image', blob, 'crop.jpg');
+
+            // Placeholder API call - replace with your Hugging Face endpoint
+            fetch('YOUR_API_ENDPOINT/YOUR_MODEL_ID', { // e.g., 'https://api-inference.huggingface.co/models/YOUR_MODEL_ID'
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer YOUR_HF_API_TOKEN` // Replace with your token
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.length > 0) {
+                    const result = data[0]; // Adjust based on your model’s output
+                    analysisResult.textContent = `Analysis: ${result.label || 'Unknown condition'} (Confidence: ${(result.score * 100).toFixed(2)}%)`;
+                } else {
+                    analysisResult.textContent = 'No analysis data received. Check API setup.';
+                }
+            })
+            .catch(error => {
+                analysisResult.textContent = `Error: ${error.message}`;
+                console.error('API error:', error);
+            })
+            .finally(() => {
+                captureButton.disabled = false;
+                startCamera(); // Restart camera
+            });
+        }
+
+        // Event listeners
+        captureButton.addEventListener('click', capturePhoto);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            startCamera();
+            // Add PWA support (optional, uncomment if needed)
+            /* if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            } */
+        });
+    </script>
+</body>
+</html>

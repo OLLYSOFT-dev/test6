@@ -1,0 +1,181 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+}
+
+header {
+    background: #3e9676;
+    padding: 10px 20px;
+    border-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+   
+    color: white;
+}
+.head {
+    display: inline;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.button {
+    background: #333;
+    height: 20px;
+    width: fit-content;
+    padding: 10px;
+    color: whitesmoke;
+    border-radius: 10px;
+
+}
+
+nav {
+    display: inline;
+}
+
+span {
+    color: #fdec00;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    height: 70px;
+    align-items: left;
+    border: 20px;
+    border
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+    font-size: 16px;
+}
+
+nav a.login, nav a.signup {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    border-radius: 5px;
+}
+
+main {
+    padding: 20px;
+}
+
+.dashboard h2, .disease-detection h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: white;
+    padding: 35px;
+    border-radius: 45px;
+    box-shadow: 0 2px 5px rgba(17, 99, 93, 0.1);
+    flex: 1 1 calc(50% - 10px);
+    min-width: 200px;
+    box-sizing: border-box;
+}
+
+.weather {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.calendar, .tips, .status {
+    background-color: white;
+}
+
+.upload-area {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.drop-zone {
+    border: 2px dashed #4CAF50;
+    padding: 40px;
+    margin-bottom: 10px;
+    background-color: #f0f8f0;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-image, .analyze-image {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 14px;
+}
+
+footer {
+    background-color: #355e3b;
+    color: white;
+    text-align: center;
+    padding: 0px 0;
+    width: 100%;
+    position: relative;
+    margin-top: 50px;
+    border-bottom: 0px;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    .logo {
+        margin-bottom: 10px;
+    }
+    nav a {
+        margin: 5px 10px;
+        font-size: 14px;
+    }
+    .cards {
+        flex-direction: column;
+    }
+    .card {
+        flex: 1 1 100%;
+    }
+    .drop-zone {
+        padding: 20px;
+    }
+    .select-image, .analyze-image {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 20px;
+    }
+    nav a {
+        font-size: 12px;
+    }
+    .dashboard h2, .disease-detection h2 {
+        font-size: 20px;
+    }
+    .card {
+        padding: 10px;
+    }
+}
